@@ -80,17 +80,16 @@ final class CopyShortcutCoordinatorTests: XCTestCase {
     func testPendingCompletionOrDeclinedActionPassesThrough() {
         let clipboard = FakeReminderClipboard(initialContents: "previous")
         let coordinator = CopyShortcutCoordinator(installMonitor: false)
-        var feedbackCount = 0
+        var actionCount = 0
         let registration = coordinator.registerCopyAction(reminderId: "pending-reminder") {
             // This is the result returned by a row while completion or editing is pending.
-            let copied = false
-            if copied { feedbackCount += 1 }
-            return copied
+            actionCount += 1
+            return false
         }
         coordinator.setHovered(registration)
 
         XCTAssertEqual(coordinator.route(commandC, responderState: .none), .passThrough)
-        XCTAssertEqual(feedbackCount, 0)
+        XCTAssertEqual(actionCount, 1)
         XCTAssertEqual(clipboard.contents, "previous")
         XCTAssertEqual(clipboard.writeAttempts, 0)
     }
