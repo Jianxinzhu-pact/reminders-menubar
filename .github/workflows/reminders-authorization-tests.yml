@@ -29,7 +29,6 @@ jobs:
             -scheme "Reminders MenuBar" \
             -configuration Debug \
             -destination 'platform=macOS' \
-            -only-testing:reminders-menubarTests/RemindersAuthorizationCoordinatorTests \
             -resultBundlePath "$RUNNER_TEMP/RemindersAuthorizationTests.xcresult" \
             CODE_SIGNING_ALLOWED=NO \
             test 2>&1 | tee "$RUNNER_TEMP/xcodebuild.log"
