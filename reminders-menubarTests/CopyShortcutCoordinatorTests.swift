@@ -11,7 +11,7 @@ final class CopyShortcutCoordinatorTests: XCTestCase {
         let registration = coordinator.registerCopyAction(reminderId: "reminder") {
             actionCount += 1
             let copied = ReminderCopyService.copy(
-                options: [option(.notes), option(.title), option(.url)],
+                options: [copyOption(.notes), copyOption(.title), copyOption(.url)],
                 variables: [
                     .title: "Book flights",
                     .notes: "Use reward points",
@@ -102,7 +102,7 @@ final class CopyShortcutCoordinatorTests: XCTestCase {
         var feedbackCount = 0
         let registration = coordinator.registerCopyAction(reminderId: "empty") {
             let copied = ReminderCopyService.copy(
-                options: [option(.title, isEnabled: false), option(.notes, isEnabled: false)],
+                options: [copyOption(.title, isEnabled: false), copyOption(.notes, isEnabled: false)],
                 variables: [.title: "Not copied"],
                 includePropertyNames: false,
                 clipboard: clipboard
@@ -125,7 +125,7 @@ final class CopyShortcutCoordinatorTests: XCTestCase {
         var feedbackCount = 0
         let registration = coordinator.registerCopyAction(reminderId: "failed") {
             let copied = ReminderCopyService.copy(
-                options: [option(.title)],
+                options: [copyOption(.title)],
                 variables: [.title: "Not copied"],
                 includePropertyNames: false,
                 clipboard: clipboard
@@ -223,12 +223,6 @@ final class CopyShortcutCoordinatorTests: XCTestCase {
         )
     }
 
-    private func option(
-        _ property: CopyProperty,
-        isEnabled: Bool = true
-    ) -> CopyPropertyOption {
-        return CopyPropertyOption(property: property, isEnabled: isEnabled)
-    }
 }
 
 private final class FakeReminderClipboard: ReminderClipboardWriting {
@@ -247,4 +241,11 @@ private final class FakeReminderClipboard: ReminderClipboardWriting {
         contents = string
         return true
     }
+}
+
+private func copyOption(
+    _ property: CopyProperty,
+    isEnabled: Bool = true
+) -> CopyPropertyOption {
+    return CopyPropertyOption(property: property, isEnabled: isEnabled)
 }
