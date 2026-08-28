@@ -21,7 +21,7 @@ struct GeneralSettingsTab: View {
 
                 Text(rmbLocalized(
                     .launchAtLoginStatusFormat,
-                    localizedLaunchAtLoginStatus(launchAtLoginCoordinator.status)
+                    arguments: localizedLaunchAtLoginStatus(launchAtLoginCoordinator.status)
                 ))
                 .modifier(SettingsNoteStyle())
 

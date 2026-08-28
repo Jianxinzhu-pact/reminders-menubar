@@ -223,11 +223,11 @@ func localizedLaunchAtLoginError(_ error: LaunchAtLoginOperationError) -> String
 
     switch error.operation {
     case .enable:
-        return rmbLocalized(.launchAtLoginEnableFailedMessage, reason)
+        return rmbLocalized(.launchAtLoginEnableFailedMessage, arguments: reason)
     case .disable:
-        return rmbLocalized(.launchAtLoginDisableFailedMessage, reason)
+        return rmbLocalized(.launchAtLoginDisableFailedMessage, arguments: reason)
     case .migration:
-        return rmbLocalized(.launchAtLoginMigrationFailedMessage, reason)
+        return rmbLocalized(.launchAtLoginMigrationFailedMessage, arguments: reason)
     }
 }
 
