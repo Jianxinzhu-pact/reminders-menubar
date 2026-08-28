@@ -1,0 +1,42 @@
+name: Nested reminder hierarchy XCTest verification
+
+on:
+  push:
+    branches:
+      - deepswe-nested-hierarchy-ci-1
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Show toolchain
+        run: |
+          sw_vers
+          uname -m
+          xcodebuild -version
+      - name: Verify solution tree
+        run: |
+          git diff --exit-code 19221eebfaecdc3724f09ff1ec87b523605ab9b0 -- \
+            reminders-menubar reminders-menubarTests reminders-menubar.xcodeproj/project.pbxproj
+      - name: Run full application unit test suite
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project reminders-menubar.xcodeproj \
+            -scheme "Reminders MenuBar" \
+            -configuration Debug \
+            -destination 'platform=macOS' \
+            -resultBundlePath "$RUNNER_TEMP/NestedReminderHierarchyTests.xcresult" \
+            CODE_SIGNING_ALLOWED=NO \
+            test | tee "$RUNNER_TEMP/xcodebuild.log"
+      - name: Upload test diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nested-reminder-hierarchy-test-results
+          path: |
+            ${{ runner.temp }}/NestedReminderHierarchyTests.xcresult
+            ${{ runner.temp }}/xcodebuild.log
