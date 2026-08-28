@@ -84,9 +84,9 @@ final class AppStoreUpdateController: ObservableObject {
             if updateAvailable {
                 let alert = NSAlert()
                 alert.messageText = rmbLocalized(.updateAvailableAlertTitle)
-                alert.informativeText = rmbLocalized(.updateAvailableAlertMessage, "App Store")
+                alert.informativeText = rmbLocalized(.updateAvailableAlertMessage, arguments: "App Store")
                 alert.alertStyle = .informational
-                alert.addButton(withTitle: rmbLocalized(.openAppStoreButton, "App Store"))
+                alert.addButton(withTitle: rmbLocalized(.openAppStoreButton, arguments: "App Store"))
                 alert.addButton(withTitle: rmbLocalized(.updateLaterButton))
 
                 let response = alert.runModal()
