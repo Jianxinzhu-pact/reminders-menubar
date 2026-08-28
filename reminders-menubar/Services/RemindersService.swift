@@ -55,18 +55,29 @@ class RemindersService: RemindersAuthorizationProviding {
     }
 
     private func createReminderItems(for calendarReminders: [EKReminder]) -> [ReminderItem] {
-        var reminderListItems: [ReminderItem] = []
-        
-        let noParentKey = "noParentKey"
-        let remindersByParentId = Dictionary(grouping: calendarReminders, by: { $0.parentId ?? noParentKey })
-        let parentReminders = remindersByParentId[noParentKey, default: []]
-        
-        parentReminders.forEach { parentReminder in
-            let parentId = parentReminder.calendarItemIdentifier
-            let children = remindersByParentId[parentId, default: []].map({ ReminderItem(for: $0, isChild: true) })
-            reminderListItems.append(ReminderItem(for: parentReminder, withChildren: children))
+        let records = calendarReminders.map { reminder in
+            ReminderHierarchyRecord(
+                value: reminder,
+                identifier: reminder.calendarItemIdentifier,
+                parentIdentifier: reminder.parentId,
+                calendarIdentifier: reminder.calendar.calendarIdentifier
+            )
         }
-        return reminderListItems
+        let hierarchy = ReminderHierarchyBuilder.build(from: records)
+        return makeReminderItems(from: hierarchy)
+    }
+
+    private func makeReminderItems(
+        from nodes: [ReminderHierarchyNode<EKReminder>]
+    ) -> [ReminderItem] {
+        return nodes.map { node in
+            ReminderItem(
+                for: node.value,
+                depth: node.depth,
+                withChildren: makeReminderItems(from: node.children)
+            )
+        }
+        .sortedReminders
     }
 
     func getReminders(of calendarIdentifiers: [String]) async -> [ReminderList] {

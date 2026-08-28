@@ -8,7 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		17C586D5B6AC530077E6659A /* ReminderSearchCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB48C141388E3FF496980F0A /* ReminderSearchCoordinatorTests.swift */; };
+		1BB12695169F90DD5F77F141 /* ReminderHierarchyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13220C956C311CBA06128A3B /* ReminderHierarchyTests.swift */; };
+		35057F929AF49ECD9396610D /* ReminderHierarchy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A378008DD99106C524E262 /* ReminderHierarchy.swift */; };
 		49EDC2E0C99FFE48677C8C72 /* ReminderSearchCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BC8877C7952CF1543674581 /* ReminderSearchCoordinator.swift */; };
+		6E22EA7B5E41298C26C0756B /* ReminderCompletionCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37C2634F4F3B0852F23E9E9 /* ReminderCompletionCoordinatorTests.swift */; };
 		7102423025F55D5600451D15 /* ReminderInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7102422F25F55D5600451D15 /* ReminderInterval.swift */; };
 		71059DAB25CA5244001F3063 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71059DAA25CA5244001F3063 /* AppDelegate.swift */; };
 		71059DE125CA5C86001F3063 /* Reminders MenuBar Launcher.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 71059DA825CA5244001F3063 /* Reminders MenuBar Launcher.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -129,6 +132,7 @@
 		96A54A6D29A3B1A90060403F /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A54A6C29A3B1A90060403F /* String+Extensions.swift */; };
 		A10000000000000000000002 /* RemindersAuthorization.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000001 /* RemindersAuthorization.swift */; };
 		A10000000000000000000004 /* RemindersAuthorizationCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000003 /* RemindersAuthorizationCoordinatorTests.swift */; };
+		A44247A53724CEEEA42E4CD6 /* ReminderCompletionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0175237720FE6899AF41CD7F /* ReminderCompletionCoordinator.swift */; };
 		B55D54F82F37DF4E002DE761 /* ReminderCopyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55D54F72F37DF4E002DE761 /* ReminderCopyService.swift */; };
 		B55D54FE2F37E4E5002DE761 /* PopoverResizeHandleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55D54FD2F37E4E5002DE761 /* PopoverResizeHandleView.swift */; };
 		BAA10DB05364868868DB8D08 /* ReminderSearchEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAE9AF42CF640ABDAB798FC6 /* ReminderSearchEngineTests.swift */; };
@@ -159,6 +163,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0175237720FE6899AF41CD7F /* ReminderCompletionCoordinator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReminderCompletionCoordinator.swift; sourceTree = "<group>"; };
+		13220C956C311CBA06128A3B /* ReminderHierarchyTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReminderHierarchyTests.swift; sourceTree = "<group>"; };
 		7102422F25F55D5600451D15 /* ReminderInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderInterval.swift; sourceTree = "<group>"; };
 		71059DA825CA5244001F3063 /* Reminders MenuBar Launcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Reminders MenuBar Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		71059DAA25CA5244001F3063 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -284,11 +290,13 @@
 		A10000000000000000000001 /* RemindersAuthorization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersAuthorization.swift; sourceTree = "<group>"; };
 		A10000000000000000000003 /* RemindersAuthorizationCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersAuthorizationCoordinatorTests.swift; sourceTree = "<group>"; };
 		A10000000000000000000005 /* Reminders MenuBarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Reminders MenuBarTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B37C2634F4F3B0852F23E9E9 /* ReminderCompletionCoordinatorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReminderCompletionCoordinatorTests.swift; sourceTree = "<group>"; };
 		B55D54F72F37DF4E002DE761 /* ReminderCopyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderCopyService.swift; sourceTree = "<group>"; };
 		B55D54FD2F37E4E5002DE761 /* PopoverResizeHandleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverResizeHandleView.swift; sourceTree = "<group>"; };
 		BB48C141388E3FF496980F0A /* ReminderSearchCoordinatorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReminderSearchCoordinatorTests.swift; sourceTree = "<group>"; };
 		C809AE7C03BC41D3E601C251 /* EventKitReminderSearchRepository.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EventKitReminderSearchRepository.swift; sourceTree = "<group>"; };
 		CAE9AF42CF640ABDAB798FC6 /* ReminderSearchEngineTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReminderSearchEngineTests.swift; sourceTree = "<group>"; };
+		D3A378008DD99106C524E262 /* ReminderHierarchy.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReminderHierarchy.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -375,6 +383,7 @@
 				71C0D001E1700001A8000001 /* MenuBarPreviewService.swift */,
 				9BC8877C7952CF1543674581 /* ReminderSearchCoordinator.swift */,
 				C809AE7C03BC41D3E601C251 /* EventKitReminderSearchRepository.swift */,
+				0175237720FE6899AF41CD7F /* ReminderCompletionCoordinator.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -470,6 +479,7 @@
 				71A043BAE1603803A839C0CB /* RmbMenuBarPreviewTimeAhead.swift */,
 				71A000002F61000100000001 /* RmbSortingOrder.swift */,
 				71B0CA012FA4000100000C01 /* CopyProperty.swift */,
+				D3A378008DD99106C524E262 /* ReminderHierarchy.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -634,6 +644,8 @@
 				A10000000000000000000003 /* RemindersAuthorizationCoordinatorTests.swift */,
 				BB48C141388E3FF496980F0A /* ReminderSearchCoordinatorTests.swift */,
 				CAE9AF42CF640ABDAB798FC6 /* ReminderSearchEngineTests.swift */,
+				13220C956C311CBA06128A3B /* ReminderHierarchyTests.swift */,
+				B37C2634F4F3B0852F23E9E9 /* ReminderCompletionCoordinatorTests.swift */,
 			);
 			path = "reminders-menubarTests";
 			sourceTree = "<group>";
@@ -943,6 +955,8 @@
 				71BD8ADB2F7DC5F400AE8D00 /* RecentRemindersTitle.swift in Sources */,
 				49EDC2E0C99FFE48677C8C72 /* ReminderSearchCoordinator.swift in Sources */,
 				D0C6C497C7C868B101F70002 /* EventKitReminderSearchRepository.swift in Sources */,
+				35057F929AF49ECD9396610D /* ReminderHierarchy.swift in Sources */,
+				A44247A53724CEEEA42E4CD6 /* ReminderCompletionCoordinator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -953,6 +967,8 @@
 				A10000000000000000000004 /* RemindersAuthorizationCoordinatorTests.swift in Sources */,
 				17C586D5B6AC530077E6659A /* ReminderSearchCoordinatorTests.swift in Sources */,
 				BAA10DB05364868868DB8D08 /* ReminderSearchEngineTests.swift in Sources */,
+				1BB12695169F90DD5F77F141 /* ReminderHierarchyTests.swift in Sources */,
+				6E22EA7B5E41298C26C0756B /* ReminderCompletionCoordinatorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

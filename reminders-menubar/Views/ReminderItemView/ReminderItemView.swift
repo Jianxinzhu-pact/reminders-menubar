@@ -122,7 +122,10 @@ struct ReminderItemView: View {
             copyCoordinator.clearIfCurrent(reminderId: reminderItem.id)
         }
         .padding(.bottom, 2)
-        .padding(.leading, reminderItem.isChild ? 22 : 0)
+        .padding(
+            .leading,
+            ReminderHierarchyLayout.leadingIndentation(forDepth: reminderItem.depth)
+        )
         .onReceive(NotificationCenter.default.publisher(for: .NSCalendarDayChanged)) { _ in
             dateInvalidation = Date()
         }
