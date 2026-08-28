@@ -304,12 +304,12 @@ private final class LaunchAtLoginHarness {
     init(
         majorVersion: Int,
         migrationComplete: Bool = false,
-        defaults: LaunchAtLoginDefaultsFake = LaunchAtLoginDefaultsFake()
+        defaults: LaunchAtLoginDefaultsFake? = nil
     ) {
-        self.defaults = defaults
+        self.defaults = defaults ?? LaunchAtLoginDefaultsFake()
         operatingSystem = LaunchAtLoginOperatingSystemFake(majorVersion: majorVersion)
         if migrationComplete {
-            defaults.set(true, forKey: LaunchAtLoginCoordinator.migrationMarkerKey)
+            self.defaults.set(true, forKey: LaunchAtLoginCoordinator.migrationMarkerKey)
         }
     }
 
