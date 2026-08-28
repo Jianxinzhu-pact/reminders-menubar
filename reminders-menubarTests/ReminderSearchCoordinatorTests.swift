@@ -251,13 +251,13 @@ final class ReminderSearchCoordinatorTests: XCTestCase {
         repository: ControllableSearchRepository,
         notificationCenter: NotificationCenter = NotificationCenter(),
         notificationName: Notification.Name = Notification.Name("search-store-change"),
-        debouncer: ManualSearchDebouncer = ManualSearchDebouncer()
+        debouncer: ManualSearchDebouncer? = nil
     ) -> ReminderSearchCoordinator<String> {
         return ReminderSearchCoordinator(
             fetchSnapshot: { await repository.fetchSnapshot() },
             notificationCenter: notificationCenter,
             notificationName: notificationName,
-            storeChangeDebouncer: debouncer
+            storeChangeDebouncer: debouncer ?? ManualSearchDebouncer()
         )
     }
 
