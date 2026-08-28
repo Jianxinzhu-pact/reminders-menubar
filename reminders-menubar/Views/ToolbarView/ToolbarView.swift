@@ -33,4 +33,5 @@ struct ToolbarView: View {
 #Preview {
     ToolbarView()
         .environmentObject(RemindersData())
+        .environmentObject(CopyShortcutCoordinator())
 }

@@ -1,17 +1,77 @@
 import AppKit
 import EventKit
 
+protocol ReminderClipboardWriting {
+    func writeString(_ string: String) -> Bool
+}
+
+struct SystemReminderClipboard: ReminderClipboardWriting {
+    static let shared = SystemReminderClipboard()
+
+    func writeString(_ string: String) -> Bool {
+        let pasteboard = NSPasteboard.general
+        let item = NSPasteboardItem()
+        guard item.setString(string, forType: .string) else { return false }
+
+        // Preserve a best-effort snapshot so an unexpected pasteboard rejection does
+        // not destroy the user's previous clipboard contents.
+        let previousItems = snapshot(items: pasteboard.pasteboardItems)
+        pasteboard.clearContents()
+        guard pasteboard.writeObjects([item]) else {
+            pasteboard.clearContents()
+            if !previousItems.isEmpty {
+                _ = pasteboard.writeObjects(previousItems)
+            }
+            return false
+        }
+        return true
+    }
+
+    private func snapshot(items: [NSPasteboardItem]?) -> [NSPasteboardItem] {
+        return (items ?? []).compactMap { source in
+            let copy = NSPasteboardItem()
+            var copiedAtLeastOneType = false
+            for type in source.types {
+                guard let data = source.data(forType: type),
+                      copy.setData(data, forType: type) else {
+                    continue
+                }
+                copiedAtLeastOneType = true
+            }
+            return copiedAtLeastOneType ? copy : nil
+        }
+    }
+}
+
 enum ReminderCopyService {
-    static func copyReminder(_ reminder: EKReminder) {
-        let text = buildFormattedText(
+    @discardableResult
+    static func copyReminder(
+        _ reminder: EKReminder,
+        clipboard: ReminderClipboardWriting = SystemReminderClipboard.shared
+    ) -> Bool {
+        return copy(
             options: UserPreferences.shared.copyPropertyOptions,
             variables: buildVariables(from: reminder),
-            includePropertyNames: UserPreferences.shared.copyIncludePropertyNames
+            includePropertyNames: UserPreferences.shared.copyIncludePropertyNames,
+            clipboard: clipboard
+        )
+    }
+
+    @discardableResult
+    static func copy(
+        options: [CopyPropertyOption],
+        variables: [CopyProperty: String],
+        includePropertyNames: Bool,
+        clipboard: ReminderClipboardWriting
+    ) -> Bool {
+        let text = buildFormattedText(
+            options: options,
+            variables: variables,
+            includePropertyNames: includePropertyNames
         )
 
-        guard !text.isEmpty else { return }
-        NSPasteboard.general.clearContents()
-        NSPasteboard.general.setString(text, forType: .string)
+        guard !text.isEmpty else { return false }
+        return clipboard.writeString(text)
     }
 
     static func previewText(options: [CopyPropertyOption], includePropertyNames: Bool) -> String {
@@ -34,7 +94,7 @@ enum ReminderCopyService {
         )
     }
 
-    private static func buildFormattedText(
+    static func buildFormattedText(
         options: [CopyPropertyOption],
         variables: [CopyProperty: String],
         includePropertyNames: Bool

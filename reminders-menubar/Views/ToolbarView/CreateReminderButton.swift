@@ -1,8 +1,12 @@
 import SwiftUI
 
+@MainActor
 struct CreateReminderButton: View {
     @EnvironmentObject var remindersData: RemindersData
+    @EnvironmentObject private var copyCoordinator: CopyShortcutCoordinator
+    @Environment(\.appHasPopoverOpen) private var appHasPopoverOpen
     @State private var showingCreateView = false
+    @State private var copySuspensionId = UUID()
 
     var body: some View {
         Button {
@@ -27,9 +31,18 @@ struct CreateReminderButton: View {
         .onReceive(NotificationCenter.default.publisher(for: NSPopover.didCloseNotification)) { _ in
             showingCreateView = false
         }
+        .onChange(of: showingCreateView) { isOpen in
+            appHasPopoverOpen.wrappedValue = isOpen
+            copyCoordinator.setSurfacePresented(isOpen, id: copySuspensionId)
+        }
+        .onDisappear {
+            copyCoordinator.setSurfacePresented(false, id: copySuspensionId)
+        }
     }
 }
 
 #Preview {
     CreateReminderButton()
+        .environmentObject(RemindersData())
+        .environmentObject(CopyShortcutCoordinator())
 }

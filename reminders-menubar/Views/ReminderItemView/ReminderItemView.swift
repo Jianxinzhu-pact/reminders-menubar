@@ -20,6 +20,8 @@ struct ReminderItemView: View {
     @State private var dateInvalidation = Date()
     @State private var dueDateExpirationCancellable: AnyCancellable?
     @State private var copiedToastDismissWork: DispatchWorkItem?
+    @State private var copyRegistration: CopyShortcutCoordinator.HoverRegistration?
+    @State private var copySuspensionId = UUID()
 
     var body: some View {
         if reminderItem.reminder.calendar == nil {
@@ -109,17 +111,19 @@ struct ReminderItemView: View {
         .onHover { isHovered in
             reminderItemIsHovered = isHovered
             if isHovered {
-                copyCoordinator.setHovered(reminderId: reminderItem.id) {
-                    copyReminderToClipboard()
-                }
-            } else {
-                copyCoordinator.clearIfCurrent(reminderId: reminderItem.id)
+                copyCoordinator.setHovered(registerCopyAction())
+            } else if let copyRegistration {
+                copyCoordinator.clearIfCurrent(copyRegistration)
             }
         }
         .onDisappear {
             copiedToastDismissWork?.cancel()
             showingCopiedToast = false
-            copyCoordinator.clearIfCurrent(reminderId: reminderItem.id)
+            copyCoordinator.setSurfacePresented(false, id: copySuspensionId)
+            if let copyRegistration {
+                copyCoordinator.unregisterCopyAction(copyRegistration)
+                self.copyRegistration = nil
+            }
         }
         .padding(.bottom, 2)
         .padding(
@@ -131,12 +135,15 @@ struct ReminderItemView: View {
         }
         .onAppear {
             subscribeToDueDateExpiration()
+            _ = registerCopyAction()
         }
         .onChange(of: reminderItem) { _ in
             subscribeToDueDateExpiration()
+            updateRegisteredCopyAction()
         }
         .onChange(of: showingEditPopover) { isOpen in
             appHasPopoverOpen.wrappedValue = isOpen
+            copyCoordinator.setSurfacePresented(isOpen, id: copySuspensionId)
         }
 
         ForEach(reminderItem.childReminders) { reminderItem in
@@ -214,15 +221,39 @@ struct ReminderItemView: View {
         return !isPendingCompletion && (hoverWithNoPopoverOpen || showingEditPopover)
     }
 
-    private func copyReminderToClipboard() {
-        guard !isPendingCompletion, !showingEditPopover, !appHasPopoverOpen.wrappedValue else { return }
-        ReminderCopyService.copyReminder(reminderItem.reminder)
+    private func registerCopyAction() -> CopyShortcutCoordinator.HoverRegistration {
+        if let copyRegistration {
+            return copyRegistration
+        }
+        let registration = copyCoordinator.registerCopyAction(reminderId: reminderItem.id) {
+            copyReminderToClipboard()
+        }
+        copyRegistration = registration
+        return registration
+    }
+
+    private func updateRegisteredCopyAction() {
+        guard let copyRegistration else { return }
+        copyCoordinator.updateCopyAction(copyRegistration) {
+            copyReminderToClipboard()
+        }
+    }
+
+    @discardableResult
+    private func copyReminderToClipboard() -> Bool {
+        guard !isPendingCompletion,
+              !showingEditPopover,
+              !appHasPopoverOpen.wrappedValue,
+              ReminderCopyService.copyReminder(reminderItem.reminder) else {
+            return false
+        }
         showingCopiedToast = true
 
         copiedToastDismissWork?.cancel()
         let work = DispatchWorkItem { showingCopiedToast = false }
         copiedToastDismissWork = work
         DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: work)
+        return true
     }
 
     @ViewBuilder

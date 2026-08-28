@@ -263,7 +263,7 @@ struct ReminderEditView: View {
         }
 
         Button {
-            ReminderCopyService.copyReminder(ekReminder)
+            guard ReminderCopyService.copyReminder(ekReminder) else { return }
             isCopied = true
             copiedDismissWork?.cancel()
             let work = DispatchWorkItem { isCopied = false }
