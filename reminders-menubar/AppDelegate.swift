@@ -40,8 +40,33 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var currentMenuBarCount = 0
     private var currentReminderPreview: String?
 
+    private let authorizationProvider: RemindersAuthorizationProviding
+
     let popover = NSPopover()
     lazy var statusBarItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+
+    private lazy var authorizationCoordinator = RemindersAuthorizationCoordinator(
+        authorizationProvider: authorizationProvider,
+        toggleAuthorizedPopover: { [weak self] in
+            self?.toggleAuthorizedPopover()
+        },
+        showAuthorizedPopover: { [weak self] in
+            self?.showAuthorizedPopoverIfNeeded()
+        },
+        reportAuthorizationFailure: { [weak self] errorMessage in
+            self?.reportAuthorizationFailure(errorMessage)
+        }
+    )
+
+    override init() {
+        authorizationProvider = RemindersService.shared
+        super.init()
+    }
+
+    init(authorizationProvider: RemindersAuthorizationProviding) {
+        self.authorizationProvider = authorizationProvider
+        super.init()
+    }
     
     var contentViewController: NSViewController {
         let contentView = ContentView()
@@ -73,7 +98,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         popover.animates = false
         popover.behavior = .transient
 
-        if RemindersService.shared.isAuthorized {
+        if authorizationProvider.isAuthorized {
             popover.contentViewController = contentViewController
         }
     }
@@ -143,27 +168,41 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func togglePopover() {
-        guard RemindersService.shared.isAuthorized else {
-            requestAuthorization()
-            return
-        }
-        
-        guard let button = statusBarItem.button else {
-            return
-        }
-        
-        if popover.contentViewController == nil {
-            popover.contentViewController = contentViewController
-        }
-        
+        authorizationCoordinator.togglePopover()
+    }
+
+    private func toggleAuthorizedPopover() {
+        guard let button = statusBarItem.button else { return }
+
+        installAuthorizedContentIfNeeded()
+
         if popover.isShown || didCloseEventDate.elapsedTimeInterval < 0.01 {
             didCloseEventDate = .distantPast
             popover.performClose(button)
         } else {
-            popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
-            NSApp.activate(ignoringOtherApps: true)
-            popover.contentViewController?.view.window?.makeKey()
+            showPopover(relativeTo: button)
         }
+    }
+
+    private func showAuthorizedPopoverIfNeeded() {
+        guard let button = statusBarItem.button else { return }
+
+        installAuthorizedContentIfNeeded()
+        guard !popover.isShown else { return }
+
+        showPopover(relativeTo: button)
+    }
+
+    private func installAuthorizedContentIfNeeded() {
+        if popover.contentViewController == nil {
+            popover.contentViewController = contentViewController
+        }
+    }
+
+    private func showPopover(relativeTo button: NSStatusBarButton) {
+        popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+        NSApp.activate(ignoringOtherApps: true)
+        popover.contentViewController?.view.window?.makeKey()
     }
 
     // - MARK: Popover sizing
@@ -297,20 +336,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 // - MARK: Authorization functions
 
 extension AppDelegate: NSAlertDelegate {
-    private func requestAuthorization() {
-        RemindersService.shared.requestAccess { [weak self] granted, errorMessage in
-            if granted {
-                return
-            }
-                
-            print("Access to reminders not granted:", errorMessage ?? "no error description")
-            DispatchQueue.main.async {
-                self?.sharedAuthorizationErrorMessage = errorMessage
-                self?.presentNoAuthorizationAlert()
-            }
-        }
+    private func reportAuthorizationFailure(_ errorMessage: String?) {
+        print("Access to reminders not granted:", errorMessage ?? "no error description")
+        sharedAuthorizationErrorMessage = errorMessage
+        presentNoAuthorizationAlert()
     }
-    
+
     private func presentNoAuthorizationAlert() {
         let alert = NSAlert()
         alert.messageText = rmbLocalized(.appNoRemindersAccessAlertMessage, arguments: AppConstants.appName)

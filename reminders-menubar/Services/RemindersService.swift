@@ -1,7 +1,7 @@
 import EventKit
 
 @MainActor
-class RemindersService {
+class RemindersService: RemindersAuthorizationProviding {
     static let shared = RemindersService()
     
     private init() {
@@ -18,7 +18,7 @@ class RemindersService {
         }
     }
     
-    func requestAccess(completion: @escaping (Bool, String?) -> Void) {
+    func requestAccess(completion: @escaping RemindersAuthorizationCompletion) {
         if #available(macOS 14.0, *) {
             eventStore.requestFullAccessToReminders { granted, error in
                 completion(granted, error?.localizedDescription)

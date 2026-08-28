@@ -21,14 +21,50 @@
                ReferencedContainer = "container:reminders-menubar.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "A10000000000000000000007"
+               BuildableName = "Reminders MenuBarTests.xctest"
+               BlueprintName = "Reminders MenuBarTests"
+               ReferencedContainer = "container:reminders-menubar.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Debug-AppStore"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
       shouldAutocreateTestPlan = "YES">
+      <MacroExpansion>
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "712C32AF24BF939100AC75E2"
+               BuildableName = "Reminders MenuBar.app"
+               BlueprintName = "Reminders MenuBar"
+               ReferencedContainer = "container:reminders-menubar.xcodeproj">
+            </BuildableReference>
+      </MacroExpansion>
+      <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "A10000000000000000000007"
+               BuildableName = "Reminders MenuBarTests.xctest"
+               BlueprintName = "Reminders MenuBarTests"
+               ReferencedContainer = "container:reminders-menubar.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug-AppStore"
