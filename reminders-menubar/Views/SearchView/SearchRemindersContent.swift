@@ -8,12 +8,12 @@ struct SearchRemindersContent: View {
 
     var body: some View {
         Group {
-            if remindersData.searchText.isEmpty {
+            if !remindersData.hasSearchQuery {
                 NoReminderItemsView(emptyList: .noSearchQuery)
-            } else if let searchResults = remindersData.searchResults {
-                mainSearchContent(searchResults)
-            } else {
+            } else if remindersData.isSearchInitialLoading {
                 ReminderLoadingView(message: rmbLocalized(.searchRemindersLoadingMessage))
+            } else {
+                mainSearchContent(remindersData.searchResults ?? [])
             }
         }
         .onChange(of: remindersData.searchResults) { _ in

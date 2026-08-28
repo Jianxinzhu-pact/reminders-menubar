@@ -6,8 +6,27 @@ import EventKit
 class RemindersData: ObservableObject {
     private var cancellationTokens: [AnyCancellable] = []
     private let previewService = MenuBarPreviewService()
+    private let searchCoordinator: ReminderSearchCoordinator<ReminderItem>
 
-    init() {
+    init(
+        searchRepository: ReminderSearchRepository = EventKitReminderSearchRepository(),
+        searchNotificationCenter: NotificationCenter = .default,
+        searchStoreChangeDebounceNanoseconds: UInt64 = 300_000_000
+    ) {
+        searchCoordinator = ReminderSearchCoordinator(
+            fetchSnapshot: { await searchRepository.fetchSnapshot() },
+            notificationCenter: searchNotificationCenter,
+            notificationName: .EKEventStoreChanged,
+            storeChangeDebouncer: TaskReminderSearchDebouncer(
+                delayNanoseconds: searchStoreChangeDebounceNanoseconds
+            )
+        )
+
+        searchCoordinator.stateDidChange = { [weak self] state in
+            self?.searchResults = state.results
+            self?.isSearchInitialLoading = state.isInitialLoading
+        }
+
         addObservers()
         Task {
             await update()
@@ -95,23 +114,6 @@ class RemindersData: ObservableObject {
             AppDelegate.shared.loadMenuBarIcon()
         }
         .store(in: &cancellationTokens)
-
-        $searchText
-            .dropFirst()
-            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
-            .combineLatest($searchableReminders)
-            .sink { [weak self] query, cached in
-                guard let self else { return }
-                guard showingSearch, !query.isEmpty, let cached else {
-                    searchResults = nil
-                    return
-                }
-                searchResults = RemindersService.shared.searchReminders(
-                    matching: query,
-                    in: cached
-                )
-            }
-            .store(in: &cancellationTokens)
     }
 
     @Published var calendars: [EKCalendar] = []
@@ -139,22 +141,27 @@ class RemindersData: ObservableObject {
         didSet {
             if showingSearch {
                 showingRecentReminders = false
-                Task {
-                    self.searchableReminders = await RemindersService.shared.fetchAllReminders()
-                }
+                searchCoordinator.open(with: searchText)
             } else {
+                searchCoordinator.close()
                 searchText = ""
-                searchResults = nil
-                searchableReminders = nil
             }
         }
     }
 
-    @Published var searchText: String = ""
+    @Published var searchText: String = "" {
+        didSet {
+            searchCoordinator.updateQuery(searchText)
+        }
+    }
 
     @Published var searchResults: [ReminderItem]?
 
-    @Published private var searchableReminders: [EKReminder]?
+    @Published var isSearchInitialLoading = false
+
+    var hasSearchQuery: Bool {
+        return ReminderSearchEngine.hasQuery(searchText)
+    }
 
     @Published var calendarIdentifiersFilter: [String] = {
         guard let identifiers = UserPreferences.shared.preferredCalendarIdentifiersFilter else {
