@@ -69,12 +69,12 @@ final class ReminderSearchEngineTests: XCTestCase {
             searchRecord("notes", title: "aaa", notes: "target", isCompleted: true),
             searchRecord("url", title: "ccc", url: "https://target.example", isCompleted: true),
             searchRecord("list", title: "bbb", calendarTitle: "target", isCompleted: true),
-            searchRecord("tag", title: "ddd", tags: ["target"], isCompleted: true)
+            searchRecord("tag", title: "aaa", tags: ["target"], isCompleted: true)
         ]
 
         XCTAssertEqual(
             ReminderSearchEngine.search(matching: "target", in: fieldWeightRecords),
-            ["title", "notes", "list", "url", "tag"]
+            ["title", "notes", "tag", "list", "url"]
         )
 
         let completionRecords = [
