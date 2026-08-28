@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A20000000000000000000001 /* LaunchAtLoginCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* LaunchAtLoginCoordinator.swift */; };
+		A20000000000000000000003 /* LaunchAtLoginCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000004 /* LaunchAtLoginCoordinatorTests.swift */; };
 		17C586D5B6AC530077E6659A /* ReminderSearchCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB48C141388E3FF496980F0A /* ReminderSearchCoordinatorTests.swift */; };
 		1BB12695169F90DD5F77F141 /* ReminderHierarchyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13220C956C311CBA06128A3B /* ReminderHierarchyTests.swift */; };
 		35057F929AF49ECD9396610D /* ReminderHierarchy.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A378008DD99106C524E262 /* ReminderHierarchy.swift */; };
@@ -163,6 +165,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A20000000000000000000002 /* LaunchAtLoginCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginCoordinator.swift; sourceTree = "<group>"; };
+		A20000000000000000000004 /* LaunchAtLoginCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginCoordinatorTests.swift; sourceTree = "<group>"; };
 		0175237720FE6899AF41CD7F /* ReminderCompletionCoordinator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReminderCompletionCoordinator.swift; sourceTree = "<group>"; };
 		13220C956C311CBA06128A3B /* ReminderHierarchyTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReminderHierarchyTests.swift; sourceTree = "<group>"; };
 		7102422F25F55D5600451D15 /* ReminderInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderInterval.swift; sourceTree = "<group>"; };
@@ -376,6 +380,7 @@
 				71CC00012FA6000100000001 /* CopyShortcutCoordinator.swift */,
 				71CC00032FA6000300000002 /* SettingsCoordinator.swift */,
 				A10000000000000000000001 /* RemindersAuthorization.swift */,
+				A20000000000000000000002 /* LaunchAtLoginCoordinator.swift */,
 				7115461824C0C280007781E2 /* RemindersService.swift */,
 				71F301F9259FB5CF00CDD81E /* UserPreferences.swift */,
 				715B4DD428D56FE5008C6683 /* KeyboardShortcutService.swift */,
@@ -642,6 +647,7 @@
 			isa = PBXGroup;
 			children = (
 				A10000000000000000000003 /* RemindersAuthorizationCoordinatorTests.swift */,
+				A20000000000000000000004 /* LaunchAtLoginCoordinatorTests.swift */,
 				BB48C141388E3FF496980F0A /* ReminderSearchCoordinatorTests.swift */,
 				CAE9AF42CF640ABDAB798FC6 /* ReminderSearchEngineTests.swift */,
 				13220C956C311CBA06128A3B /* ReminderHierarchyTests.swift */,
@@ -854,6 +860,7 @@
 				71F93A632E03B6DA00D5C5BC /* ReminderDateDescriptionView.swift in Sources */,
 				7115461924C0C280007781E2 /* RemindersService.swift in Sources */,
 				A10000000000000000000002 /* RemindersAuthorization.swift in Sources */,
+				A20000000000000000000001 /* LaunchAtLoginCoordinator.swift in Sources */,
 				715B4DD728D59BF2008C6683 /* FilterReminderListButton.swift in Sources */,
 				71217B9F2F8C4D7F00E5FEB4 /* SparkleUpdateController.swift in Sources */,
 				71B6D1FB24C6511000E66EDB /* ToolbarView.swift in Sources */,
@@ -965,6 +972,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10000000000000000000004 /* RemindersAuthorizationCoordinatorTests.swift in Sources */,
+				A20000000000000000000003 /* LaunchAtLoginCoordinatorTests.swift in Sources */,
 				17C586D5B6AC530077E6659A /* ReminderSearchCoordinatorTests.swift in Sources */,
 				BAA10DB05364868868DB8D08 /* ReminderSearchEngineTests.swift in Sources */,
 				1BB12695169F90DD5F77F141 /* ReminderHierarchyTests.swift in Sources */,

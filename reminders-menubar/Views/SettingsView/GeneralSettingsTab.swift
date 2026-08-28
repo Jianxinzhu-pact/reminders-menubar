@@ -2,14 +2,50 @@ import SwiftUI
 
 struct GeneralSettingsTab: View {
     @ObservedObject var userPreferences = UserPreferences.shared
+    @ObservedObject var launchAtLoginCoordinator = LaunchAtLoginCoordinator.shared
 
     var body: some View {
         Form {
             SettingsSection {
                 Toggle(
                     rmbLocalized(.launchAtLoginOption),
-                    isOn: $userPreferences.launchAtLoginIsEnabled
+                    isOn: Binding(
+                        get: { launchAtLoginCoordinator.isEnabled },
+                        set: { launchAtLoginCoordinator.setEnabled($0) }
+                    )
                 )
+                .disabled(
+                    launchAtLoginCoordinator.status == .requiresApproval ||
+                    launchAtLoginCoordinator.status == .unavailable
+                )
+
+                Text(rmbLocalized(
+                    .launchAtLoginStatusFormat,
+                    localizedLaunchAtLoginStatus(launchAtLoginCoordinator.status)
+                ))
+                .modifier(SettingsNoteStyle())
+
+                if launchAtLoginCoordinator.status == .requiresApproval {
+                    Text(rmbLocalized(.launchAtLoginApprovalDescription))
+                        .modifier(SettingsNoteStyle())
+                    Button(rmbLocalized(.launchAtLoginOpenLoginItemsButton)) {
+                        launchAtLoginCoordinator.openLoginItemsSettings()
+                    }
+                }
+
+                if let error = launchAtLoginCoordinator.lastError {
+                    Text(localizedLaunchAtLoginError(error))
+                        .font(.caption)
+                        .foregroundColor(.red)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Button(rmbLocalized(.launchAtLoginRetryButton)) {
+                        launchAtLoginCoordinator.retryLastOperation()
+                    }
+                } else if launchAtLoginCoordinator.status == .unavailable {
+                    Button(rmbLocalized(.launchAtLoginRetryButton)) {
+                        launchAtLoginCoordinator.refreshStatus()
+                    }
+                }
             }
 
             SettingsDivider()
@@ -76,6 +112,10 @@ struct GeneralSettingsTab: View {
             }
         }
         .padding(20)
+        .onAppear {
+            launchAtLoginCoordinator.start()
+            launchAtLoginCoordinator.refreshStatus()
+        }
     }
 }
 

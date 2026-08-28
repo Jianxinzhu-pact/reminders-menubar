@@ -2,22 +2,68 @@ import Cocoa
 
 @MainActor
 final class RightClickMenuHelper: NSObject {
-    static let shared = RightClickMenuHelper()
+    static let shared = RightClickMenuHelper(
+        launchAtLoginCoordinator: LaunchAtLoginCoordinator.shared
+    )
 
-    private override init() {
+    private let launchAtLoginCoordinator: LaunchAtLoginCoordinator
+
+    init(launchAtLoginCoordinator: LaunchAtLoginCoordinator) {
+        self.launchAtLoginCoordinator = launchAtLoginCoordinator
         super.init()
     }
 
     // MARK: - Build Menu
 
     func buildRightClickMenu() -> NSMenu {
-        let menu = NSMenu()
+        launchAtLoginCoordinator.start()
+        launchAtLoginCoordinator.refreshStatus()
 
-        menu.addItem(makeMenuItem(
-            title: rmbLocalized(.launchAtLoginOption),
-            action: #selector(toggleLaunchAtLogin),
-            state: UserPreferences.shared.launchAtLoginIsEnabled ? .on : .off
-        ))
+        let menu = NSMenu()
+        let status = launchAtLoginCoordinator.status
+        let launchItem = makeMenuItem(
+            title: "\(rmbLocalized(.launchAtLoginOption)) — \(localizedLaunchAtLoginStatus(status))",
+            action: #selector(handleLaunchAtLoginAction),
+            state: menuState(for: status)
+        )
+        launchItem.isEnabled = status != .unavailable
+        menu.addItem(launchItem)
+
+        if status == .requiresApproval {
+            let explanation = NSMenuItem(
+                title: rmbLocalized(.launchAtLoginApprovalDescription),
+                action: nil,
+                keyEquivalent: ""
+            )
+            explanation.isEnabled = false
+            menu.addItem(explanation)
+            menu.addItem(makeMenuItem(
+                title: rmbLocalized(.launchAtLoginOpenLoginItemsButton),
+                action: #selector(openLoginItemsSettings),
+                systemSymbolName: "gearshape"
+            ))
+        }
+
+        if let error = launchAtLoginCoordinator.lastError {
+            let errorItem = NSMenuItem(
+                title: localizedLaunchAtLoginError(error),
+                action: nil,
+                keyEquivalent: ""
+            )
+            errorItem.isEnabled = false
+            menu.addItem(errorItem)
+            menu.addItem(makeMenuItem(
+                title: rmbLocalized(.launchAtLoginRetryButton),
+                action: #selector(retryLaunchAtLogin),
+                systemSymbolName: "arrow.clockwise"
+            ))
+        } else if status == .unavailable {
+            menu.addItem(makeMenuItem(
+                title: rmbLocalized(.launchAtLoginRetryButton),
+                action: #selector(refreshLaunchAtLogin),
+                systemSymbolName: "arrow.clockwise"
+            ))
+        }
 
         menu.addItem(.separator())
 
@@ -83,10 +129,37 @@ final class RightClickMenuHelper: NSObject {
         return item
     }
 
+    private func menuState(for status: LaunchAtLoginStatus) -> NSControl.StateValue {
+        switch status {
+        case .enabled:
+            return .on
+        case .requiresApproval:
+            return .mixed
+        case .disabled, .unavailable:
+            return .off
+        }
+    }
+
     // MARK: - Actions
 
-    @objc private func toggleLaunchAtLogin() {
-        UserPreferences.shared.launchAtLoginIsEnabled.toggle()
+    @objc private func handleLaunchAtLoginAction() {
+        if launchAtLoginCoordinator.status == .requiresApproval {
+            launchAtLoginCoordinator.openLoginItemsSettings()
+        } else {
+            launchAtLoginCoordinator.setEnabled(!launchAtLoginCoordinator.isEnabled)
+        }
+    }
+
+    @objc private func openLoginItemsSettings() {
+        launchAtLoginCoordinator.openLoginItemsSettings()
+    }
+
+    @objc private func retryLaunchAtLogin() {
+        launchAtLoginCoordinator.retryLastOperation()
+    }
+
+    @objc private func refreshLaunchAtLogin() {
+        launchAtLoginCoordinator.refreshStatus()
     }
 
     @objc private func reloadData() {

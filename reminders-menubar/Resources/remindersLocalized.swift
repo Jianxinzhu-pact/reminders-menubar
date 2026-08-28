@@ -45,6 +45,19 @@ enum RemindersMenuBarLocalizedKeys: String {
     case recentRemindersLoadingMessage
     case updateAvailableNoticeButton
     case launchAtLoginOption
+    case launchAtLoginStatusFormat
+    case launchAtLoginStatusEnabled
+    case launchAtLoginStatusDisabled
+    case launchAtLoginStatusRequiresApproval
+    case launchAtLoginStatusUnavailable
+    case launchAtLoginApprovalDescription
+    case launchAtLoginOpenLoginItemsButton
+    case launchAtLoginRetryButton
+    case launchAtLoginEnableFailedMessage
+    case launchAtLoginDisableFailedMessage
+    case launchAtLoginMigrationFailedMessage
+    case launchAtLoginServiceUnavailableMessage
+    case launchAtLoginStatusDidNotChangeMessage
     case appAppearanceReduceTransparencyOption
     case appColorSchemeSettingsLabel
     case appAppearanceColorSystemModeOption
@@ -182,6 +195,40 @@ func rmbLocalized(_ key: RemindersMenuBarLocalizedKeys, arguments: CVarArg...) -
         return localizedString
     }
     return String(format: localizedString, arguments: arguments)
+}
+
+func localizedLaunchAtLoginStatus(_ status: LaunchAtLoginStatus) -> String {
+    switch status {
+    case .enabled:
+        return rmbLocalized(.launchAtLoginStatusEnabled)
+    case .disabled:
+        return rmbLocalized(.launchAtLoginStatusDisabled)
+    case .requiresApproval:
+        return rmbLocalized(.launchAtLoginStatusRequiresApproval)
+    case .unavailable:
+        return rmbLocalized(.launchAtLoginStatusUnavailable)
+    }
+}
+
+func localizedLaunchAtLoginError(_ error: LaunchAtLoginOperationError) -> String {
+    let reason: String
+    switch error.reason {
+    case .system(let description):
+        reason = description
+    case .serviceUnavailable:
+        reason = rmbLocalized(.launchAtLoginServiceUnavailableMessage)
+    case .statusDidNotChange:
+        reason = rmbLocalized(.launchAtLoginStatusDidNotChangeMessage)
+    }
+
+    switch error.operation {
+    case .enable:
+        return rmbLocalized(.launchAtLoginEnableFailedMessage, reason)
+    case .disable:
+        return rmbLocalized(.launchAtLoginDisableFailedMessage, reason)
+    case .migration:
+        return rmbLocalized(.launchAtLoginMigrationFailedMessage, reason)
+    }
 }
 
 func rmbAvailableLocales() -> [ReminderMenuBarLocale] {

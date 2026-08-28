@@ -81,12 +81,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         AppDelegate.shared = self
+        LaunchAtLoginCoordinator.shared.start()
 
         configurePopover()
         configureMenuBarButton()
         configureKeyboardShortcut()
         configureDidCloseNotification()
         configureDidShowNotification()
+    }
+
+    func applicationDidBecomeActive(_ notification: Notification) {
+        LaunchAtLoginCoordinator.shared.applicationDidBecomeActive()
     }
 
     func applicationWillTerminate(_ notification: Notification) {
