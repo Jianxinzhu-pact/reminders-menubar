@@ -8,8 +8,12 @@ class RemindersData: ObservableObject {
     private let previewService = MenuBarPreviewService()
     private let searchCoordinator: ReminderSearchCoordinator<ReminderItem>
 
+    convenience init() {
+        self.init(searchRepository: EventKitReminderSearchRepository())
+    }
+
     init(
-        searchRepository: ReminderSearchRepository = EventKitReminderSearchRepository(),
+        searchRepository: ReminderSearchRepository,
         searchNotificationCenter: NotificationCenter = .default,
         searchStoreChangeDebounceNanoseconds: UInt64 = 300_000_000
     ) {

@@ -18,7 +18,11 @@ struct ReminderSearchTagReader {
 final class EventKitReminderSearchRepository: ReminderSearchRepository {
     private let remindersService: RemindersService
 
-    init(remindersService: RemindersService = .shared) {
+    init() {
+        remindersService = .shared
+    }
+
+    init(remindersService: RemindersService) {
         self.remindersService = remindersService
     }
 
